@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Password Strength Checker</title>
+  </head>
+  <style>
+    .title {
+      text-align: center;
+      margin-top: 100px;
+    }
+    .massage {
+      text-align: center;
+    }
+    .input-div {
+      display: flex;
+      max-width: 500px;
+      gap: 20px;
+      margin: 0 auto;
+      justify-content: center;
+      padding-top: 50px;
+      height: 50px;
+    }
+    .show {
+      cursor: pointer;
+      display: none;
+    }
+    #password {
+      width: 100%;
+      box-sizing: border-box;
+      padding-left: 20px;
+      padding-right: 20px;
+      border-radius: 10px;
+    }
+    #password:focus-visible {
+      border-color: gree;
+    }
+  </style>
+  <body>
+    <h2 class="title">check your password strong week or medium</h2>
+    <div class="input-div">
+      <input
+        id="password"
+        type="password"
+        style="width: 100%"
+        onkeyup="checkPassword()"
+        placeholder="Enter your password"
+      />
+      <p class="show">show</p>
+    </div>
+    <p class="massage"></p>
+
+    <script>
+      const input = document.querySelector("input");
+      const massage = document.querySelector(".massage");
+      const show = document.querySelector(".show");
+
+      // Regex patterns
+      let weekPassword = /[a-zA-Z]/; // letters
+      let mediumPassword = /\d+/; // digits
+      let StrongPassword = /[!@#$%^&*?_()-]/; // special characters
+
+      function checkPassword() {
+        const value = input.value;
+
+        if (value.length === 0) {
+          massage.textContent = "";
+          show.style.display = "none"; // hide when empty
+          return;
+        } else {
+          show.style.display = "inline"; // show when typing
+        }
+        // ✅ Strong check first
+        if (
+          value.length >= 6 &&
+          value.match(weekPassword) &&
+          value.match(mediumPassword) &&
+          value.match(StrongPassword)
+        ) {
+          massage.style.color = "green";
+          massage.textContent = "✅ Your password is strong";
+        }
+        // 🟡 Medium
+        else if (
+          value.length >= 6 &&
+          ((value.match(weekPassword) && value.match(mediumPassword)) ||
+            (value.match(mediumPassword) && value.match(StrongPassword)) ||
+            (value.match(weekPassword) && value.match(StrongPassword)))
+        ) {
+          massage.style.color = "orange";
+          massage.textContent = "🟡 Your password is medium";
+        }
+        // 🔴 Weak
+        else if (
+          value.length <= 3 &&
+          (value.match(weekPassword) ||
+            value.match(mediumPassword) ||
+            value.match(StrongPassword))
+        ) {
+          massage.style.color = "black";
+          massage.textContent = "🔴 Your password is weak";
+        }
+        // Default fallback
+        else {
+          massage.style.color = "red";
+          massage.textContent = "🔴 Your password is weak";
+        }
+      }
+
+      show.onclick = function () {
+        if (input.type === "password") {
+          input.type = "text";
+          show.textContent = "Hide";
+          show.style.color = "black";
+        } else {
+          input.type = "password";
+          show.textContent = "Show";
+          show.style.color = "black";
+        }
+      };
+    </script>
+  </body>
+</html>
